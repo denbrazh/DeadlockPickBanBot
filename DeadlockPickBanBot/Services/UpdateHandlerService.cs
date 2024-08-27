@@ -29,6 +29,8 @@ public class UpdateHandlerService
     private static List<Chelik> team2Picks = new List<Chelik>();
     private static List<string> team1 = new List<string>();
     private static List<string> team2 = new List<string>();
+    private static string Command1Name = "Первая";
+    private static string Command2Name = "Вторая";
     private static bool isTeam1Turn = false;
     private static bool pickStage = false;
     private static int banCount = 0;
@@ -47,14 +49,14 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой  {update.CallbackQuery.Data}  забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
+                        $"{(isTeam1Turn ? Command1Name : Command2Name)} бан {update.CallbackQuery.Data}. \n Стадия банов завершена! \n Введите команду /pick для стадии пиков"
                     );
                 }
                 else
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой  {update.CallbackQuery.Data}  забанен. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
+                        $"{(isTeam1Turn ? Command1Name : Command2Name)} бан {update.CallbackQuery.Data} \n {(isTeam1Turn ? Command2Name : Command1Name)} банит следующей.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
@@ -65,14 +67,6 @@ public class UpdateHandlerService
             {
                 pickCount++;
                 heroes.Remove(update.CallbackQuery.Data);
-                if (pickCount != 12)
-                {
-                    await botClient.SendTextMessageAsync(
-                        update.CallbackQuery.Message.Chat.Id,
-                        $"Герой {update.CallbackQuery.Data}  выбран. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
-                        replyMarkup: new InlineKeyboardMarkup(GetHeroes())
-                    );
-                }
                 if (isTeam1Turn)
                 {
                     team1Picks.Add(new Chelik
@@ -89,6 +83,17 @@ public class UpdateHandlerService
                         Hero = update.CallbackQuery.Data
                     });
                 }
+                
+                if (pickCount != 12)
+                {
+                    await botClient.SendTextMessageAsync(
+                        update.CallbackQuery.Message.Chat.Id,
+                        $"{(isTeam1Turn ? team1Picks.Count : team2Picks.Count)} герой для команды " +
+                        $"{(isTeam1Turn ? Command1Name : Command2Name)} это {update.CallbackQuery.Data}! \n {(isTeam1Turn ? Command2Name : Command1Name)} выбирает следующая!",
+                        replyMarkup: new InlineKeyboardMarkup(GetHeroes())
+                    );
+                }
+
                 isTeam1Turn = !isTeam1Turn;
             }
 
@@ -104,11 +109,11 @@ public class UpdateHandlerService
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 1:\n{string.Join("\n", team1Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 3:\n{string.Join("\n", team1Picks.Select(chel => $"{chel.Hero}"))}"
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 2:\n{string.Join("\n", team2Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 6:\n{string.Join("\n", team2Picks.Select(chel => $"{chel.Hero}"))}"
                 );
             }
         }
@@ -124,8 +129,8 @@ public class UpdateHandlerService
                 case "/start":
 
                     var res = await botClient.SendTextMessageAsync(
-                        chatId,
-                        "Добро пожаловать в турнир по Deadlock! Команда 1, напишите '1'. Команда 2, напишите '2'."
+                            chatId, 
+                        $"Добро пожаловать в турнир по Deadlock! Команда {Command1Name}, напишите '1'. Команда {Command2Name}, напишите '2'."
                     );
                     break;
 
@@ -133,8 +138,13 @@ public class UpdateHandlerService
                     if (!team1.Contains(userName))
                     {
                         team1.Add(userName);
-                        await botClient.SendTextMessageAsync(chatId, $"{userName} добавлен в команду 1.");
-                        Console.WriteLine($"{userName}");
+                        await botClient.SendTextMessageAsync(chatId, $"{userName} добавлен в команду {Command1Name}.");
+                        Console.WriteLine($"{userName} в комманде {Command1Name}");
+
+                        if (team1.Count == 1 && team2.Count == 1)
+                        {
+                            goto case "/ban";
+                        }
                     }
 
                     break;
@@ -143,36 +153,37 @@ public class UpdateHandlerService
                     if (!team2.Contains(userName))
                     {
                         team2.Add(userName);
-                        await botClient.SendTextMessageAsync(chatId, $"{userName} добавлен в команду 2.");
+                        await botClient.SendTextMessageAsync(chatId, $"{userName} добавлен в команду {Command2Name}.");
+                        Console.WriteLine($"{userName} в комманде {Command2Name}");
+
+                        if (team1.Count == 1 && team2.Count == 1)
+                        {
+                            goto case "/ban";
+                        }
                     }
 
                     break;
 
                 case "/ban":
-                    if (team1.Count == 1 && team2.Count == 1)
+                    if (team1.Count != 1 | team2.Count != 1)
                     {
-                        isTeam1Turn = new Random().Next(2) == 0;
-                        var replyMarkup = new InlineKeyboardMarkup(GetHeroes());
-                        await botClient.SendTextMessageAsync(chatId,
-                            $"Начинаем бан героев. {(isTeam1Turn ? "Команда 1" : "Команда 2")} начинает.",
-                            replyMarkup: replyMarkup);
+                        break;
                     }
-                    else
-                    {
-                        await botClient.SendTextMessageAsync(chatId, "Не все игроки зарегистрированы.");
-                    }
-
+                    var stringCoin = CoinFlip();
+                    var replyMarkup = new InlineKeyboardMarkup(GetHeroes());
+                    await botClient.SendTextMessageAsync(chatId,
+                        stringCoin,
+                        replyMarkup: replyMarkup);
                     break;
 
                 case "/pick":
-                    pickStage = true; 
-                    isTeam1Turn = new Random().Next(2) == 0;
+                    pickStage = true;
+                    var stringPickCoin = CoinFlip();
                     await botClient.SendTextMessageAsync(
                         chatId,
-                        $"Начинается стадия пиков!. {(isTeam1Turn ? "Команда 2" : "Команда 1")} Выбирает первой!.",
+                        stringPickCoin,
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
-                    isTeam1Turn = !isTeam1Turn;
                     break;
             }
         }
@@ -213,5 +224,33 @@ public class UpdateHandlerService
         }
 
         return false;
+    }
+
+    public static string CoinFlip()
+    {
+        var team1Random = 1;
+        var team2Random = 1;
+
+        
+        while (team1Random == team2Random)
+        {
+            team1Random = new Random().Next(0, 100);
+            team2Random = new Random().Next(0, 100);
+        }
+
+        isTeam1Turn = team1Random > team2Random;
+
+        var word1 = "бан";
+        var word2 = "банить";
+        
+        if (pickStage)
+        {
+            word1 = "пик";
+            word2 = "пикать";
+        }
+        
+        return $"Начинаем {word1} героев. \n Команда {Command1Name} выбросила ({team1Random}) " +
+               $"\n Команда {Command2Name} выбросила ({team2Random}) " +
+               $"\n {(isTeam1Turn ? $"Команда {Command1Name}" : $"Команда {Command2Name}")} начинает {word2} первой.";
     }
 }
