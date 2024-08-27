@@ -100,15 +100,15 @@ public class UpdateHandlerService
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Забаненные герои:\n{string.Join(", ", bannedHeroes)}"
+                    $"Забаненные герои:\n{string.Join(", \n", bannedHeroes)}"
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 1:\n{string.Join(", ", team1Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 1:\n{string.Join(", \n", team1Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 2:\n{string.Join(", ", team2Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 2:\n{string.Join(", \n", team2Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
                 );
             }
         }
