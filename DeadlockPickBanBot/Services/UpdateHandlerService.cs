@@ -49,14 +49,14 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой {update.CallbackQuery.Data} забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
+                        $"Герой **{update.CallbackQuery.Data}** забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
                     );
                 }
                 else
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой {update.CallbackQuery.Data} забанен. {(isTeam1Turn ? team2Name : team1Name)} следующая.",
+                        $"Герой **{update.CallbackQuery.Data}** забанен. {(isTeam1Turn ? team2Name : team1Name)} следующая.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
@@ -71,7 +71,7 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой {update.CallbackQuery.Data} выбран. {(isTeam1Turn ? team2Name : team1Name)} следующая.",
+                        $"Герой **{update.CallbackQuery.Data}** выбран. {(isTeam1Turn ? team2Name : team1Name)} следующая.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
@@ -107,11 +107,11 @@ public class UpdateHandlerService
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 1: {string.Join(", ", team1Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 1: {string.Join(", ", team1Picks.Select(chel => $"{chel.Nickname} - **{chel.Hero}**"))}"
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 2: {string.Join(", ", team2Picks.Select(chel => $"{chel.Nickname} - {chel.Hero}"))}"
+                    $"Команда 2: {string.Join(", ", team2Picks.Select(chel => $"{chel.Nickname} - **{chel.Hero}**"))}"
                 );
             }
         }
