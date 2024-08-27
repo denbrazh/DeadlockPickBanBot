@@ -49,7 +49,8 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой **{update.CallbackQuery.Data}** забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
+                        $"Герой **{update.CallbackQuery.Data}** забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков",
+                        parseMode: ParseMode.Markdown
                     );
                 }
                 else
@@ -57,7 +58,8 @@ public class UpdateHandlerService
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
                         $"Герой **{update.CallbackQuery.Data}** забанен. **{(isTeam1Turn ? team2Name : team1Name)}** следующая.",
-                        replyMarkup: new InlineKeyboardMarkup(GetHeroes())
+                        replyMarkup: new InlineKeyboardMarkup(GetHeroes()),
+                        parseMode: ParseMode.Markdown
                     );
                 }
 
@@ -72,7 +74,8 @@ public class UpdateHandlerService
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
                         $"Герой **{update.CallbackQuery.Data}** выбран. **{(isTeam1Turn ? team2Name : team1Name)}** следующая.",
-                        replyMarkup: new InlineKeyboardMarkup(GetHeroes())
+                        replyMarkup: new InlineKeyboardMarkup(GetHeroes()),
+                        parseMode: ParseMode.Markdown
                     );
                 }
                 if (isTeam1Turn)
@@ -107,11 +110,13 @@ public class UpdateHandlerService
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 1:\n{string.Join("\n", team1Picks.Select(chel => $"**{chel.Nickname}** - **{chel.Hero}**"))}"
+                    $"Команда 1:\n{string.Join("\n", team1Picks.Select(chel => $"**{chel.Nickname}** - **{chel.Hero}**"))}",
+                    parseMode: ParseMode.Markdown
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 2:\n{string.Join("\n", team2Picks.Select(chel => $"**{chel.Nickname}** - **{chel.Hero}**"))}"
+                    $"Команда 2:\n{string.Join("\n", team2Picks.Select(chel => $"**{chel.Nickname}** - **{chel.Hero}**"))}",
+                    parseMode: ParseMode.Markdown
                 );
             }
         }
@@ -136,7 +141,11 @@ public class UpdateHandlerService
                     if (!team1.Contains(userName))
                     {
                         team1.Add(userName);
-                        await botClient.SendTextMessageAsync(chatId, $"**{userName}** добавлен в команду 3.");
+                        await botClient.SendTextMessageAsync(
+                            chatId, 
+                            $"**{userName}** добавлен в команду 3.",
+                            parseMode: ParseMode.Markdown
+                            );
                         Console.WriteLine($"{userName}");
                     }
 
@@ -146,7 +155,11 @@ public class UpdateHandlerService
                     if (!team2.Contains(userName))
                     {
                         team2.Add(userName);
-                        await botClient.SendTextMessageAsync(chatId, $"**{userName}** добавлен в команду 6.");
+                        await botClient.SendTextMessageAsync(
+                            chatId, 
+                            $"**{userName}** добавлен в команду 6.",
+                            parseMode: ParseMode.Markdown
+                            );
                     }
 
                     break;
@@ -160,7 +173,8 @@ public class UpdateHandlerService
                     team2Name = teamNames[0];
                     await botClient.SendTextMessageAsync(
                         chatId,
-                        $"Команда 3 - **{team1Name}**\nКоманда 6 - **{team2Name}**"
+                        $"Команда 3 - **{team1Name}**\nКоманда 6 - **{team2Name}**",
+                        parseMode: ParseMode.Markdown
                         );
                     
                     if (team1.Count == 1 && team2.Count == 1)
@@ -170,7 +184,9 @@ public class UpdateHandlerService
                         await botClient.SendTextMessageAsync(
                             chatId,
                             $"Начинаем бан героев. **{(isTeam1Turn ? team1Name : team2Name)}** начинает.",
-                            replyMarkup: replyMarkup);
+                            replyMarkup: replyMarkup,
+                            parseMode: ParseMode.Markdown
+                            );
                     }
                     else
                     {
@@ -185,7 +201,8 @@ public class UpdateHandlerService
                     await botClient.SendTextMessageAsync(
                         chatId,
                         $"Начинается стадия пиков! **{(isTeam1Turn ? team2Name : team1Name)}** выбирает первой!.",
-                        replyMarkup: new InlineKeyboardMarkup(GetHeroes())
+                        replyMarkup: new InlineKeyboardMarkup(GetHeroes()),
+                        parseMode: ParseMode.Markdown
                     );
                     isTeam1Turn = !isTeam1Turn;
                     break;
