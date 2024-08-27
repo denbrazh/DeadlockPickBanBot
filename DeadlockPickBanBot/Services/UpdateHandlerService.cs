@@ -47,14 +47,14 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой **{update.CallbackQuery.Data}** забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
+                        $"Герой  {update.CallbackQuery.Data}  забанен. Стадия банов завершена! \n Введите команду /pick для стадии пиков"
                     );
                 }
                 else
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой **{update.CallbackQuery.Data}** забанен. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
+                        $"Герой  {update.CallbackQuery.Data}  забанен. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
@@ -69,7 +69,7 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"Герой **{update.CallbackQuery.Data}** выбран. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
+                        $"Герой {update.CallbackQuery.Data}  выбран. {(isTeam1Turn ? "Команда 2" : "Команда 1")} следующая.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
