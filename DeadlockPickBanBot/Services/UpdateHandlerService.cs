@@ -29,8 +29,8 @@ public class UpdateHandlerService
     private static List<Chelik> team2Picks = new List<Chelik>();
     private static List<string> team1 = new List<string>();
     private static List<string> team2 = new List<string>();
-    private static string Command1Name = "Первая";
-    private static string Command2Name = "Вторая";
+    private static string Command1Name = "GOYDA";
+    private static string Command2Name = "Предупреждаем";
     private static bool isTeam1Turn = false;
     private static bool pickStage = false;
     private static int banCount = 0;
@@ -115,11 +115,11 @@ public class UpdateHandlerService
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 3:\n{string.Join("\n", team1Picks.Select(chel => $"{chel.Hero}"))}"
+                    $"Команда {Command1Name}:\n{string.Join("\n", team1Picks.Select(chel => $"{chel.Hero}"))}"
                 );
                 await botClient.SendTextMessageAsync(
                     update.CallbackQuery.Message.Chat.Id,
-                    $"Команда 6:\n{string.Join("\n", team2Picks.Select(chel => $"{chel.Hero}"))}"
+                    $"Команда {Command2Name}:\n{string.Join("\n", team2Picks.Select(chel => $"{chel.Hero}"))}"
                 );
             }
         }
