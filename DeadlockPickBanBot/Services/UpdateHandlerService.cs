@@ -147,7 +147,7 @@ public class UpdateHandlerService
                         );
                         Console.WriteLine($"{userName} в команде {Command1Name}");
 
-                        if (team1.Count == 1 && team2.Count == 1)
+                        if (team1.Count == 6 && team2.Count == 6)
                         {
                             goto case "/ban";
                         }
@@ -166,7 +166,7 @@ public class UpdateHandlerService
                         );
                         Console.WriteLine($"{userName} в комманде {Command2Name}");
 
-                        if (team1.Count == 1 && team2.Count == 1)
+                        if (team1.Count == 6 && team2.Count == 6)
                         {
                             goto case "/ban";
                         }
@@ -175,7 +175,7 @@ public class UpdateHandlerService
                     break;
 
                 case "/ban":
-                    if (team1.Count != 1 | team2.Count != 1)
+                    if (team1.Count != 6 | team2.Count != 6)
                     {
                         break;
                     }
