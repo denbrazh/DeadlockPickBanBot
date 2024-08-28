@@ -37,6 +37,7 @@ public class UpdateHandlerService
     private static int pickCount = 0;
 
     private static bool randomStart = false;
+    private static string stringCoin;
 
     public async Task HandleUpdateAsync(Update update, ITelegramBotClient botClient)
     {
@@ -174,10 +175,10 @@ public class UpdateHandlerService
                         break;
                     }
                     
-                    if (randomStart) { var stringCoin = CoinFlip(); }
+                    if (randomStart) { stringCoin = CoinFlip(); }
                     else
                     {
-                        var stringCoin = 
+                        stringCoin = 
                             $"Начинаем банить героев." +
                             $"\n{(isTeam1Turn ? $"Команда {Command1Name}" : $"Команда {Command2Name}")} начинает банить первой.";
                     }
