@@ -94,7 +94,7 @@ public class UpdateHandlerService
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
                         $"{(isTeam1Turn ? team1Picks.Count : team2Picks.Count)}-й герой для команды {(isTeam1Turn ? Command1Name : Command2Name)} это {update.CallbackQuery.Data}!" +
-                        $"\n{(isTeam1Turn ? Command2Name : Command1Name)} выбирает следующая!",
+                        $"\nКоманда {(isTeam1Turn ? Command2Name : Command1Name)} выбирает героя",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                 }
@@ -173,7 +173,15 @@ public class UpdateHandlerService
                     {
                         break;
                     }
+                    
                     if (randomStart) { var stringCoin = CoinFlip(); }
+                    else
+                    {
+                        var stringCoin = 
+                            $"Начинаем банить героев." +
+                            $"\n{(isTeam1Turn ? $"Команда {Command1Name}" : $"Команда {Command2Name}")} начинает банить первой.";
+                    }
+                    
                     var replyMarkup = new InlineKeyboardMarkup(GetHeroes());
                     await botClient.SendTextMessageAsync(
                         chatId,
@@ -186,7 +194,7 @@ public class UpdateHandlerService
                     pickStage = true;
                     await botClient.SendTextMessageAsync(
                         chatId,
-                        stringPickCoin,
+                        $"{(isTeam1Turn ? $"Команда {Command1Name}" : $"Команда {Command2Name}")} выбирает героя.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
                     break;
