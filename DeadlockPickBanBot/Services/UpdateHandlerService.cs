@@ -36,6 +36,8 @@ public class UpdateHandlerService
     private static int banCount = 0;
     private static int pickCount = 0;
 
+    private static bool randomStart = false;
+
     public async Task HandleUpdateAsync(Update update, ITelegramBotClient botClient)
     {
         if (update.Type == UpdateType.CallbackQuery && CheckPermiss(update.CallbackQuery.From.Username))
@@ -49,7 +51,7 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"{(isTeam1Turn ? Command1Name : Command2Name)} бан {update.CallbackQuery.Data}." +
+                        $"{(isTeam1Turn ? Command1Name : Command2Name)} забанили {update.CallbackQuery.Data}." +
                         $"\nСтадия банов завершена!" +
                         $"\nВведите команду /pick для стадии пиков"
                     );
@@ -58,7 +60,7 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"{(isTeam1Turn ? Command1Name : Command2Name)} бан {update.CallbackQuery.Data}" +
+                        $"{(isTeam1Turn ? Command1Name : Command2Name)} забанили {update.CallbackQuery.Data}" +
                         $"\n{(isTeam1Turn ? Command2Name : Command1Name)} банит следующей.",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
@@ -91,7 +93,7 @@ public class UpdateHandlerService
                 {
                     await botClient.SendTextMessageAsync(
                         update.CallbackQuery.Message.Chat.Id,
-                        $"{(isTeam1Turn ? team1Picks.Count : team2Picks.Count)} герой для команды {(isTeam1Turn ? Command1Name : Command2Name)} это {update.CallbackQuery.Data}!" +
+                        $"{(isTeam1Turn ? team1Picks.Count : team2Picks.Count)}-й герой для команды {(isTeam1Turn ? Command1Name : Command2Name)} это {update.CallbackQuery.Data}!" +
                         $"\n{(isTeam1Turn ? Command2Name : Command1Name)} выбирает следующая!",
                         replyMarkup: new InlineKeyboardMarkup(GetHeroes())
                     );
@@ -130,7 +132,6 @@ public class UpdateHandlerService
             switch (message)
             {
                 case "/start":
-
                     var res = await botClient.SendTextMessageAsync(
                         chatId, 
                         $"Добро пожаловать в турнир по Deadlock! Команда {Command1Name}, напишите '1'. Команда {Command2Name}, напишите '2'."
@@ -172,7 +173,7 @@ public class UpdateHandlerService
                     {
                         break;
                     }
-                    var stringCoin = CoinFlip();
+                    if (randomStart) { var stringCoin = CoinFlip(); }
                     var replyMarkup = new InlineKeyboardMarkup(GetHeroes());
                     await botClient.SendTextMessageAsync(
                         chatId,
@@ -183,7 +184,6 @@ public class UpdateHandlerService
 
                 case "/pick":
                     pickStage = true;
-                    var stringPickCoin = CoinFlip();
                     await botClient.SendTextMessageAsync(
                         chatId,
                         stringPickCoin,
@@ -254,8 +254,9 @@ public class UpdateHandlerService
             word2 = "пикать";
         }
         
-        return $"Начинаем {word1} героев. \n Команда {Command1Name} выбросила ({team1Random}) " +
-               $"\nКоманда {Command2Name} выбросила ({team2Random}) " +
+        return $"Начинаем {word1} героев." +
+               $"\nКоманда {Command1Name} выбросила ({team1Random})" +
+               $"\nКоманда {Command2Name} выбросила ({team2Random})" +
                $"\n{(isTeam1Turn ? $"Команда {Command1Name}" : $"Команда {Command2Name}")} начинает {word2} первой.";
     }
 }
