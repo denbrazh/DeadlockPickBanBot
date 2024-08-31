@@ -61,7 +61,5 @@ public class Lobby
 {
     public int LobbyId { get; set; }
     public int TgChatId { get; set; }
-    public int PickBanSchemaId { get; set; }
-    public string Team1Id { get; set; } = null!;
-    public string Team2Id { get; set; } = null!;
+    public string CurrentStatus { get; set; } = null!; // регистрация команд, пики баны, идёт игра, просто болтаем ...
 }
