@@ -1,5 +1,6 @@
 using DeadlockPickBanBot.Models;
 using DeadlockPickBanBot.Services;
+using DeadlockPickBanBot.Services.MessageServices;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.Configure<BotConfiguration>(botConfigSection);
 builder.Services.AddHttpClient("tgwebhook").RemoveAllLoggers().AddTypedClient<ITelegramBotClient>(
     httpClient => new TelegramBotClient(botConfigSection.Get<BotConfiguration>()!.BotToken, httpClient));
 builder.Services.AddSingleton<UpdateHandler>();
+builder.Services.AddSingleton<OnMessageHandler>();
 builder.Services.ConfigureTelegramBotMvc();
 
 builder.Services.AddControllers();
