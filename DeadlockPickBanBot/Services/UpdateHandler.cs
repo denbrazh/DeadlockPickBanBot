@@ -1,3 +1,4 @@
+using DeadlockPickBanBot.Services.MessageServices;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -8,7 +9,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace DeadlockPickBanBot.Services;
 
-public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger) : IUpdateHandler
+public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger, OnMessageHandler messageHandler) : IUpdateHandler
 {
     private static readonly InputPollOption[] PollOptions = ["Deadlock", "PickBan"];
     public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
@@ -16,8 +17,8 @@ public class UpdateHandler(ITelegramBotClient bot, ILogger<UpdateHandler> logger
         cancellationToken.ThrowIfCancellationRequested();
         await (update switch
         {
-            { Message: { } message }                        => OnMessage(message),
-            { EditedMessage: { } message }                  => OnMessage(message),
+            { Message: { } message }                        => messageHandler.OnMessage(message),
+            { EditedMessage: { } message }                  => messageHandler.OnMessage(message),
             { CallbackQuery: { } callbackQuery }            => OnCallbackQuery(callbackQuery),
             { InlineQuery: { } inlineQuery }                => OnInlineQuery(inlineQuery),
             { ChosenInlineResult: { } chosenInlineResult }  => OnChosenInlineResult(chosenInlineResult),
