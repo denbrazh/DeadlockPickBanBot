@@ -29,9 +29,9 @@ public class UpdateHandlerService
     private static List<Chelik> team2Picks = new List<Chelik>();
     private static List<string> team1 = new List<string>();
     private static List<string> team2 = new List<string>();
-    private static string Command1Name = "GOYDA";
-    private static string Command2Name = "Предупреждаем";
-    private static bool isTeam1Turn = false;
+    private static string Command1Name = "Breaking Bad";
+    private static string Command2Name = "6 SexHunters";
+    private static bool isTeam1Turn = true;
     private static bool pickStage = false;
     private static int banCount = 0;
     private static int pickCount = 0;
@@ -147,7 +147,7 @@ public class UpdateHandlerService
                         );
                         Console.WriteLine($"{userName} в команде {Command1Name}");
 
-                        if (team1.Count == 1 && team2.Count == 1)
+                        if (team1.Count == 6 && team2.Count == 6)
                         {
                             goto case "/ban";
                         }
@@ -166,7 +166,7 @@ public class UpdateHandlerService
                         );
                         Console.WriteLine($"{userName} в комманде {Command2Name}");
 
-                        if (team1.Count == 1 && team2.Count == 1)
+                        if (team1.Count == 6 && team2.Count == 6)
                         {
                             goto case "/ban";
                         }
@@ -175,11 +175,6 @@ public class UpdateHandlerService
                     break;
 
                 case "/ban":
-                    if (team1.Count != 1 | team2.Count != 1)
-                    {
-                        break;
-                    }
-                    
                     if (randomStart) { stringCoin = CoinFlip(); }
                     else
                     {
