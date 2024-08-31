@@ -61,5 +61,5 @@ public class Lobby
 {
     public int LobbyId { get; set; }
     public int TgChatId { get; set; }
-    public string CurrentStatus { get; set; } = null!; // регистрация команд, пики баны, идёт игра, просто болтаем ...
+    public string CurrentStatus { get; set; } = null!; // Message.Chat
 }
